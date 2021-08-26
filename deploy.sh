@@ -1,6 +1,6 @@
 set -e
 
-yarn build --base='CheckingBoard'
+yarn build
 
 cd dist
 

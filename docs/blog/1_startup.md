@@ -17,8 +17,15 @@
 所以初步的打算是：
 
 - 使用 Vue CLI 创建 Vue3（Vuex，Vue Router 如果有必要再说）
-- 前端使用 Tailwind（需要学习）
-- 使用 localForage 做前端存储
+
+  > 更新：后来改成了 Vite
+
+- 前端使用 [Tailwind](https://tailwindcss.com/)（不过需要学习）
+
+  > 更新：也许会改成使用 [windicss](https://windicss.org/)
+
+- 使用 [localForage](https://localforage.github.io/localForage/) 做前端存储
+
 - 未来考虑加入 Electron
 
 哦对，顺便也是在练习标准指法……
@@ -49,7 +56,7 @@ yarn dev #http://localhost:3000/
 
 
 
-下一步，我需要再了解这些内容：
+下一步，我需要再了解这些内容（都是读文档的事情）：
 
 - `vite.config.ts` 的配置
 - `env.d.ts` 的内容（主要是了解一下 TS 里 reference 的作用）
@@ -69,6 +76,17 @@ yarn dev #http://localhost:3000/
 
 所以在继续读文档之前，先试试看能不能搭起来……
 
+> 更新：看完 Vite 文档之后，发现 [这里](https://cn.vitejs.dev/guide/static-deploy.html) 已经写的很清楚了……
+>
+> 稍微修改了一下代码，又交了个 commit：
+>
+> - 在 vite.config.ts 把 base 统一了
+> - 试了一下 import.meta.env.BASE_URL
+>
+> 之后再考虑在 Github action 中看怎么自动部署。
+
+
+
 ### build
 
 首先参考 [文档](https://cn.vitejs.dev/guide/#command-line-interface) 运行：
@@ -87,9 +105,7 @@ yarn build
 
 但是在配置完 Github page 之后，打开 https://aasdkl.github.io/CheckingBoard/ ，发现还是白屏，依然是路径报错。
 
-搜了一下，首先是参考了[这个回答](https://stackoverflow.com/a/56638750)：
-
-> 创建  `vue.config.js` 来动态配置 publicPath
+搜了一下，首先是参考了[这个回答](https://stackoverflow.com/a/56638750)，创建  `vue.config.js` 来动态配置 `publicPath`
 
 但是重新 build 之后，资源的路径并没有变……感觉配置没有成功生效，不确定是什么原因。
 
@@ -97,7 +113,9 @@ yarn build
 
 于是我首先就在 Vue 的文档里搜了一下 `publicPath`，但是什么都没有。但是在 Vite 里面，搜到了[相关的内容](https://cn.vitejs.dev/guide/build.html#public-base-path)，我才恍然大悟：
 
-> 哦！原来 `vue.config.js` 文件是给 webpack 使用的，如果用 Vue CLI 才需要这个文件
+哦！原来 `vue.config.js` 文件是给 webpack 使用的，如果用 Vue CLI 才需要这个文件
+
+> 更新：读完文档之后发现这个 base 是可以写在 vite.config.ts 里的，所以最后的 deploy.sh 其实没有做其他的修改
 
 
 
@@ -118,6 +136,8 @@ yarn build --base='CheckingBoard'
 
 然后只需要运行 `sh deploy.sh` 就可以直接 push 到 `gh-pages `下。
 
-不过后续会想参考[这个](https://gist.github.com/cobyism/4730490#gistcomment-1851849)，把这个脚本加到 npm script 里面
+不过后续会想是不是参考[这个](https://gist.github.com/cobyism/4730490#gistcomment-1851849)，把脚本加到 npm script 里面
 
 但首先，还是要读文档啊！
+
+> 更新：对对对！！！读文档！！！
