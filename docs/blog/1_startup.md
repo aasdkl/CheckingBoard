@@ -32,7 +32,7 @@
 
 
 
-## 创建模板 - Vite
+## 创建模板
 
 在重看 Vue 文档的时候，我想到：既然我也不会用 webpack，那我要不就直接用 Vite 来建项目了？所以我就开始看起 Vite 的文档了……
 
@@ -76,16 +76,16 @@ yarn dev #http://localhost:3000/
 
 所以在继续读文档之前，先试试看能不能搭起来……
 
-> 更新：看完 Vite 文档之后，发现 [这里](https://cn.vitejs.dev/guide/static-deploy.html) 已经写的很清楚了……
+> 更新：看完 Vite 文档之后，发现 [这里](https://cn.vitejs.dev/guide/static-deploy.html) 已经写的很清楚了……所以将之前的文档折叠了。
 >
-> 稍微修改了一下代码，又交了个 commit：
+> 然后稍微修改了一下代码，又交了个 commit：
 >
 > - 在 vite.config.ts 把 base 统一了
 > - 试了一下 import.meta.env.BASE_URL
->
-> 之后再考虑在 Github action 中看怎么自动部署。
 
 
+<details>
+<summary>【之前自己摸索的步骤】</summary>
 
 ### build
 
@@ -138,6 +138,47 @@ yarn build --base='CheckingBoard'
 
 不过后续会想是不是参考[这个](https://gist.github.com/cobyism/4730490#gistcomment-1851849)，把脚本加到 npm script 里面
 
+> 更新：Github Actions 部署了就没必要啦~
+
 但首先，还是要读文档啊！
 
 > 更新：对对对！！！读文档！！！
+</details>
+
+
+## 使用 Github Actions 部署
+
+截止到今天，没有在 [Vite 文档](https://cn.vitejs.dev/guide/static-deploy.html) 中看到怎么使用 Github action 来自动部署……所以只能自己摸索了。
+
+
+
+由于在文档的 `deploy.sh` 脚本下面有这么一句话：
+
+> TIP
+>
+> 你也可以在你的 CI 中配置该脚本，使得在每次推送代码时自动部署。
+
+所以在写 Github Actions 的 `.yml` 文件的时候，我都是想着应该是要能够运行这个脚本的（即一定要有这么一句）：
+
+```yaml
+bash ./deploy.sh
+```
+
+
+
+由于之前没有用过 Github Actions，也不清楚这个 CI 的原理，所以虽然从 [Actions market](https://github.com/marketplace) 里面找到了 [GitHub Pages action](https://github.com/marketplace/actions/github-pages-action) ，但也不太会用，不知道要怎么运行 `deploy.sh`……
+
+随着一边试错，一边搜索，看到了 [这一篇](https://github.com/bosens-China/blog/issues/49) 文章，说了怎么用 Github Actions 来定时运行 bash 脚本。（而且 `deploy.sh` 还是一样的……）
+
+
+
+不过做到一半的时候，我忽然明白过来，这个 Github 提供的 CI 也还是在虚拟机里面重新 deploy，那么，是不是可以不用 `deploy.sh` 脚本呢？
+
+重新认真看一下这个 [GitHub Pages action](https://github.com/marketplace/actions/github-pages-action) ，才发现后面有 Vue 的模板……把 `.yml` 文件拷贝过来试了试，这次成功了。
+
+现在只要 push 代码的时候，就能够自动更新 `gh-pages` 分支了。
+
+
+
+> - [一堆更新 deploy.yml 的 commit](https://github.com/aasdkl/CheckingBoard/commits/setup-removed)
+> - [最终的 deploy.yml](https://github.com/aasdkl/CheckingBoard/blob/setup-removed/.github/workflows/deploy.yml)
