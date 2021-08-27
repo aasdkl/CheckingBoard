@@ -20,5 +20,7 @@ jobs:
         uses: srt32/git-actions@v0.0.3
       - name: Setup
         run: |
+          git config --global user.email "hsuehchiahao@gmail.com"
+          git config --global user.name "github action"
           npm install
-          bash deploy.sh
+          npm run updata
