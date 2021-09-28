@@ -4,17 +4,26 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "format": "yarn format:prettier & yarn format:lint",
+    "format:prettier": "prettier --write .",
+    "format:lint": "eslint --fix . --ext .js,.jsx,.ts,.tsx,.vue"
   },
   "dependencies": {
     "vue": "^3.2.6"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.31.2",
+    "@typescript-eslint/parser": "^4.31.2",
     "@vitejs/plugin-vue": "^1.6.0",
     "@vue/compiler-sfc": "^3.0.5",
-    "typescript": "^4.3.2",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-vue": "^7.18.0",
+    "prettier": "^2.4.1",
+    "typescript": "^4.4.3",
     "vite": "^2.5.1",
-    "vue-tsc": "^0.2.2",
-    "vite-tsconfig-paths": "^3.3.14"
+    "vite-tsconfig-paths": "^3.3.14",
+    "vue-tsc": "^0.2.2"
   }
 }
