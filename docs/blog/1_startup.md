@@ -12,8 +12,6 @@
 
 说了这么多，其实就是想说，这个项目里面可能有很多初学者会犯的错，但是我想着把过程一起记录下来，就当一个学习的记录吧。
 
-
-
 所以初步的打算是：
 
 - 使用 Vue CLI 创建 Vue3（Vuex，Vue Router 如果有必要再说）
@@ -29,8 +27,6 @@
 - 未来考虑加入 Electron
 
 哦对，顺便也是在练习标准指法……
-
-
 
 ## 创建模板
 
@@ -54,21 +50,15 @@ yarn dev #http://localhost:3000/
 
 然后我翻了一下模板的代码，发现代码基本上和 Vue2 的类似。
 
-
-
 下一步，我需要再了解这些内容（都是读文档的事情）：
 
 - `vite.config.ts` 的配置
 - `env.d.ts` 的内容（主要是了解一下 TS 里 reference 的作用）
 - Vue3 的 `setup()` 、`ref()`（以及 `<script setup>`）
 
-
-
 ## 配置 VSCode
 
 为了配合 Vue3 和 TS ，官方推荐的 VSCode 插件从 Vetur 转到了 Volar，所以需要重新安装一下，并且把 Vetur 禁用了。
-
-
 
 ## 部署到 Github page
 
@@ -82,7 +72,6 @@ yarn dev #http://localhost:3000/
 >
 > - 在 vite.config.ts 把 base 统一了
 > - 试了一下 import.meta.env.BASE_URL
-
 
 <details>
 <summary>【之前自己摸索的步骤】</summary>
@@ -105,11 +94,9 @@ yarn build
 
 但是在配置完 Github page 之后，打开 https://aasdkl.github.io/CheckingBoard/ ，发现还是白屏，依然是路径报错。
 
-搜了一下，首先是参考了[这个回答](https://stackoverflow.com/a/56638750)，创建  `vue.config.js` 来动态配置 `publicPath`
+搜了一下，首先是参考了[这个回答](https://stackoverflow.com/a/56638750)，创建 `vue.config.js` 来动态配置 `publicPath`
 
 但是重新 build 之后，资源的路径并没有变……感觉配置没有成功生效，不确定是什么原因。
-
-
 
 于是我首先就在 Vue 的文档里搜了一下 `publicPath`，但是什么都没有。但是在 Vite 里面，搜到了[相关的内容](https://cn.vitejs.dev/guide/build.html#public-base-path)，我才恍然大悟：
 
@@ -117,15 +104,11 @@ yarn build
 
 > 更新：读完文档之后发现这个 base 是可以写在 vite.config.ts 里的，所以最后的 deploy.sh 其实没有做其他的修改
 
-
-
 然后试着重新 Build 并且部署，终于成功了！
 
 ```bash
 yarn build --base='CheckingBoard'
 ```
-
-
 
 最后，依然是参考[那个回答](https://stackoverflow.com/a/56638750)的 `deploy.sh`，修改了一下
 
@@ -143,14 +126,12 @@ yarn build --base='CheckingBoard'
 但首先，还是要读文档啊！
 
 > 更新：对对对！！！读文档！！！
-</details>
 
+</details>
 
 ## 使用 Github Actions 部署
 
 截止到今天，没有在 [Vite 文档](https://cn.vitejs.dev/guide/static-deploy.html) 中看到怎么使用 Github action 来自动部署……所以只能自己摸索了。
-
-
 
 由于在文档的 `deploy.sh` 脚本下面有这么一句话：
 
@@ -164,21 +145,15 @@ yarn build --base='CheckingBoard'
 bash ./deploy.sh
 ```
 
-
-
 由于之前没有用过 Github Actions，也不清楚这个 CI 的原理，所以虽然从 [Actions market](https://github.com/marketplace) 里面找到了 [GitHub Pages action](https://github.com/marketplace/actions/github-pages-action) ，但也不太会用，不知道要怎么运行 `deploy.sh`……
 
 随着一边试错，一边搜索，看到了 [这一篇](https://github.com/bosens-China/blog/issues/49) 文章，说了怎么用 Github Actions 来定时运行 bash 脚本。（而且 `deploy.sh` 还是一样的……）
-
-
 
 不过做到一半的时候，我忽然明白过来，这个 Github 提供的 CI 也还是在虚拟机里面重新 deploy，那么，是不是可以不用 `deploy.sh` 脚本呢？
 
 重新认真看一下这个 [GitHub Pages action](https://github.com/marketplace/actions/github-pages-action) ，才发现后面有 Vue 的模板……把 `.yml` 文件拷贝过来试了试，这次成功了。
 
 现在只要 push 代码的时候，就能够自动更新 `gh-pages` 分支了。
-
-
 
 > - [一堆更新 deploy.yml 的 commit](https://github.com/aasdkl/CheckingBoard/commits/setup-removed)
 > - [最终的 deploy.yml](https://github.com/aasdkl/CheckingBoard/blob/setup-removed/.github/workflows/deploy.yml)

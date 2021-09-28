@@ -10,8 +10,6 @@
 
 > [vite-electron-builder](https://github.com/cawa-93/vite-electron-builder)
 
-
-
 ## 项目配置
 
 没想到一个月之后才继续……期间把文档都过了一遍，然后看了些 Vite 的 plugin……但果然还是月底比较闲啊哈哈哈。
@@ -39,7 +37,6 @@
 1. `yarn dev` 报错（build 的时候无法找到文件）
 2. IDE 无法跳转到对应文件
 
-
 #### 解决编译报错
 
 先参考 Vite 文档。Vite 提供了 [resolve.alias](https://cn.vitejs.dev/config/#resolve-alias) 选项：
@@ -51,16 +48,15 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": "/src",
-      "components": "/src/components",
-    }
+      components: "/src/components",
+    },
   },
-})
+});
 ```
 
 除了 `components` 的别名以外，还特别加了一个 `@` 别名指向了 `/src`，这是在 webpack 里面默认设置的。虽然应该不会被用到，但是也加上了。
 
 现在运行 `yarn dev` 就不会报错了。
-
 
 #### 解决 IDE 无法跳转
 
@@ -81,8 +77,7 @@ IDE 无法跳转的原因应该是：TypeScript 无法解析文件的路径。
 
 另外，由于使用的不是相对路径，我们还需要显式声明一个 `baseUrl`。不然会报下面的 warning：
 
-> tsconfig.json:14:14: warning: Non-relative path "src/*" is not allowed when "baseUrl" is not set (did you forget a leading "./"?)
-
+> tsconfig.json:14:14: warning: Non-relative path "src/\*" is not allowed when "baseUrl" is not set (did you forget a leading "./"?)
 
 #### 更好的方案防止重复代码
 
@@ -129,9 +124,9 @@ export default defineConfig({
   // },
   plugins: [
     vue(),
-    tsconfigPaths({ loose: true }) // <-- 只需要这个
-  ]
-})
+    tsconfigPaths({ loose: true }), // <-- 只需要这个
+  ],
+});
 ```
 
 这里由于是 Vue 项目，所以必须加上 `loose: true` 这个参数。
