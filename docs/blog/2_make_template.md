@@ -1,26 +1,18 @@
-# 2. 搭建项目
-
-## Electron 模板
-
-考虑到未来想加上 Electron，但不知道 Vite 导入 Electron 的时候会不会有很多坑，就在纠结是不是要先加上 Electron 来重新建一个项目……
-
-但是想了一下，做成桌面版好像也不是那么必要……而且毕竟只是个纯前端应用，未来要迁移到 Electron 应该也不是太难，所以还是先放弃了。
-
-不过先码一下，到时候可能会参考这个库来试着引入。
-
-> [vite-electron-builder](https://github.com/cawa-93/vite-electron-builder)
-
-## 项目配置
+# 2. 搭建项目（Vite + Vue3 + TypeScript + ESLint + Prettier）
 
 没想到一个月之后才继续……期间把文档都过了一遍，然后看了些 Vite 的 plugin……但果然还是月底比较闲啊哈哈哈。
 
-稍微翻了一下过去搬砖的时候做的 Electron 项目，打算先配几个：
+这次的项目打算先配上这么几个：
 
-- 路径别名 (Path alias)
-- 代码检查和格式化 (lint & prettier)
-- 引入 Pug 和 Windi CSS
+- [路径别名 (Path alias)](#配置路径别名-path-alias)
+- [代码检查和格式化 (lint & prettier)](#配置代码检查与格式化-lint--prettier)
+- [~~提交之前的检查 (pre-commit)~~](#配置提交之前的检查-pre-commit)
 
-### 配置路径别名 (Path alias)
+把这几个配好，就大致能成为一个能用的模板了。
+
+---
+
+## 配置路径别名 (Path alias)
 
 简而言之，就是把 import 时候的路径缩短：
 
@@ -32,12 +24,12 @@
 
 虽然我觉得有 IDE 自动补全，缩写不是太需要了，但是看起来比较清爽一点。
 
-就这么把路径缩短之后，会导致：
+那么把路径缩短之后，我们需要修复这两个问题：
 
 1. `yarn dev` 报错（build 的时候无法找到文件）
 2. IDE 无法跳转到对应文件
 
-#### 解决编译报错
+### 1. 解决编译报错
 
 先参考 Vite 文档。Vite 提供了 [resolve.alias](https://cn.vitejs.dev/config/#resolve-alias) 选项：
 
@@ -58,7 +50,7 @@ export default defineConfig({
 
 现在运行 `yarn dev` 就不会报错了。
 
-#### 解决 IDE 无法跳转
+### 2. 解决 IDE 无法跳转
 
 IDE 无法跳转的原因应该是：TypeScript 无法解析文件的路径。
 
@@ -79,7 +71,7 @@ IDE 无法跳转的原因应该是：TypeScript 无法解析文件的路径。
 
 > tsconfig.json:14:14: warning: Non-relative path "src/\*" is not allowed when "baseUrl" is not set (did you forget a leading "./"?)
 
-#### 更好的方案防止重复代码
+### 3. 更好的方案防止重复代码
 
 > 1. `yarn dev` 报错（build 的时候无法找到文件）
 > 2. IDE 无法跳转到对应文件
@@ -135,20 +127,24 @@ export default defineConfig({
 
 ---
 
-### 配置代码检查与格式化 (lint & prettier)
+## 配置代码检查与格式化 (lint & prettier)
 
-然后通过引入 ESLint 和 Prettier，来检查代码和格式化。
+> 以下部分参考了 [vue-ts](https://github.com/imomaliev/vue-ts) 这个模板，并且加入了自己的理解（而且作者还有个 [blog](https://dev.to/imomaliev/series/13845) 来描述怎么一步步配置出来的）。
+>
+> 看见他 star 数只有 3，感觉可能是名字起得不太好……
+
+然后我们开始通过引入 ESLint 和 Prettier，来检查代码和格式化。
 
 其中 Prettier 用于处理格式问题(Formatting rules)，而 ESLint 处理质量问题(Code-quality rules)。（见 [prettier 文档](https://prettier.io/docs/en/comparison.html)）
 
 > 当然，也是因为没有试过 Prettier 就想试一下……
 
-#### 配置 Prettier（代码格式化）
+### 配置 Prettier（代码格式化）
 
 1. **安装依赖**
 
    ```bash
-   npm install --save-dev eslint eslint-plugin-vue
+   npm install --save-dev prettier
    #or
    yarn add -D prettier
    ```
@@ -182,23 +178,31 @@ export default defineConfig({
 
    在后面的部分会介绍如何在 VS Code 中，当保存时自动格式化。
 
-#### 配置 ESLint（代码检查）
+### 配置 ESLint（代码检查）
 
 1. **安装依赖**
 
    由于项目使用了 Vue 和 TS，而且又需要把代码格式化的部分委托给 Prettier，所以需要增加的依赖比较多：
 
    ```bash
-   npm install --save-dev eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-plugin-vue eslint-config-prettier
+   npm install --save-dev eslint \
+                          @typescript-eslint/parser \
+                          @typescript-eslint/eslint-plugin \
+                          eslint-plugin-vue \
+                          eslint-config-prettier
    #or
-   yarn add -D eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-plugin-vue eslint-config-prettier
+   yarn add -D eslint \
+               @typescript-eslint/parser \
+               @typescript-eslint/eslint-plugin \
+               eslint-plugin-vue \
+               eslint-config-prettier
    ```
 
    基本依赖：
 
    - eslint
 
-   - [@nabla/vite-plugin-eslint](https://github.com/nabla/vite-plugin-eslint)（可选）- 这个插件能把原本只在命令行显示的 Lint 错误，显示在了浏览器页面上。
+   - ~~[@nabla/vite-plugin-eslint](https://github.com/nabla/vite-plugin-eslint)~~（可选）- 这个插件能把原本只在命令行显示的 Lint 错误，显示在了浏览器页面上。
 
    TS 相关（参考 [@typescript-eslint 的说明](https://github.com/typescript-eslint/typescript-eslint#packages-included-in-this-project)）：
 
@@ -273,11 +277,11 @@ export default defineConfig({
    // package.json
    "scripts": {
      "format": "yarn format:prettier & yarn format:lint",
-     "format:lint": "eslint . --ext .js,.jsx,.ts,.tsx,.vue"
+     "format:lint": "eslint --fix . --ext .js,.jsx,.ts,.tsx,.vue"
    },
    ```
 
-#### 配置 IDE 自动格式化
+### 配置 IDE 自动格式化
 
 对于 VS Code 来说，首先下载扩展 [prettier-vscode](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)。
 
@@ -297,6 +301,69 @@ export default defineConfig({
 
 其余 IDE，详见 [Prettier 文档](https://prettier.io/docs/en/editors.html)
 
+### 验证配置（代码检查与格式化）
+
+首先在 `/src` 下创建一个 `test.vue` 文件，贴入如下内容：
+
+<!-- prettier-ignore -->
+```vue
+<script setup lang="ts">
+const someHTML: string = '' // #1
+</script>
+
+<template>
+  <div v-html='this.someHTML'></div> <!--#2 -->
+</template>
+```
+
+当运行 `yarn format / npm run format` （或是通过 IDE 保存自动格式化，或是通过快捷键）：
+
+- #1 的部分会被修改为：
+
+  ```diff
+  - const someHTML: string = '' // #1
+  + const someHTML = ""; // #1
+  ```
+
+  其中 Prettier 修改的部分为（通过 `yarn format:prettier / npm run format:prettier`）：
+
+  - 单引号改为双引号（见 [Prettier: [quotes]](https://prettier.io/docs/en/options.html#quotes)）
+  - 加上分号（见 [Prettier: [semicolons]](https://prettier.io/docs/en/options.html#semicolons)）
+
+  ESLint 修改的部分为（通过 `yarn format:lint / npm run format:lint`）：
+
+  - 删掉了 ":string"（见 [typescript-eslint: [no-inferrable-types]](https://github.com/typescript-eslint/typescript-eslint/blob/v4.31.2/packages/eslint-plugin/docs/rules/no-inferrable-types.md)）
+
+- #2 的部分会被修改为：
+
+  ```diff
+  - <div v-html='this.someHTML'></div> <!--#2 -->
+  + <div v-html="someHTML"></div>
+  + <!--#2 -->
+  ```
+
+  其中 Prettier 修改的部分为（通过 `yarn format:prettier / npm run format:prettier`）：
+
+  - 单引号改为双引号（见 [Prettier: [quotes]](https://prettier.io/docs/en/options.html#quotes)）
+  - 注释换行（未见到说明，但的确是由于 Prettier）
+
+  ESLint 修改的部分为（通过 `yarn format:lint / npm run format:lint`）：
+
+  - 删掉了 "this"（见 [eslint-plugin-vue: [this-in-template]](https://eslint.vuejs.org/rules/this-in-template.html)）
+  - 对 `v-html` 加上了 warning（见 [eslint-plugin-vue: [no-v-html]](https://eslint.vuejs.org/rules/no-v-html.html)）
+
 ---
 
-### 引入 Pug 和 Windi CSS
+## ~~配置提交之前的检查 (pre-commit)~~
+
+Git 提供了一些 Hooks，能够在 commit / push 等操作之前做点事情。而像 [husky](https://typicode.github.io/husky/#/) 之类的库，正是在此基础上进行了扩展。
+
+原本是想着加个最简单的，在 commit 之前做一下代码格式化。
+
+所以找了个 [pre-commit](https://github.com/observing/pre-commit) 库，可以直接调已有的 `format` 命令。
+
+但试了一下发现体验不是很好，commit 的时间加长了许多（毕竟是对所有文件，而不是 staged 的）。
+
+后来想想还是就不花时间折腾了，现在 VS Code 能保存的时候自动格式化就够了。
+
+而且大概不太会有人贡献代码（笑）。
