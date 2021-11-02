@@ -1,8 +1,8 @@
 # 2. 搭建项目（Vite + Vue3 + TypeScript + ESLint + Prettier）
 
-没想到一个月之后才继续……期间把文档都过了一遍，然后看了些 Vite 的 plugin……但果然还是月底比较闲啊哈哈哈。
+> 没想到一个月之后才继续……期间把文档都过了一遍，然后看了些 Vite 的 plugin……但果然还是月底比较闲啊哈哈哈。
 
-这次的项目打算先配上这么几个：
+首先需要配置一些基础的，与项目无关的部分，比如：
 
 - [路径别名 (Path alias)](#配置路径别名-path-alias)
 - [代码检查和格式化 (lint & prettier)](#配置代码检查与格式化-lint--prettier)
@@ -354,7 +354,7 @@ const someHTML: string = '' // #1
 
 ---
 
-## ~~配置提交之前的检查 (pre-commit)~~
+## ~~配置提交之前的检查 (pre-commit)~~（未实现）
 
 Git 提供了一些 Hooks，能够在 commit / push 等操作之前做点事情。而像 [husky](https://typicode.github.io/husky/#/) 之类的库，正是在此基础上进行了扩展。
 
