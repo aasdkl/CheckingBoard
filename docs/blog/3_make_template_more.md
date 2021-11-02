@@ -1,14 +1,14 @@
-# 3. 搭建项目（Pug + Windi CSS）
+# 3. 搭建项目（Pug / Windi CSS / Electron）
 
 ## Pug（未使用）
 
 之前使用过一段时间的 [Pug](https://pugjs.org/api/getting-started.html)，感觉还是挺方便的。
 
-但是因为代码检查的问题，最后还是没有使用。
+但是因为代码检查的问题，最后还是没有使用上。
 
 ### 代码检查的问题
 
-需要注意的是，目前还没有一个能比较好的支持 pug 模板下的 vue 的 linter。
+需要注意的是，截至目前还没有一个能比较好的支持 pug 模板下的 vue 的 linter。
 
 即：[eslint-plugin-vue](https://github.com/vuejs/eslint-plugin-vue) 暂时还不支持 Pug（主要是 [vue-eslint-parser](https://github.com/vuejs/vue-eslint-parser) 目前还不支持）。
 
@@ -18,7 +18,7 @@ issue 里面有提到一个 [eslint-plugin-vue-pug-sfc](https://github.com/Shini
 
 或者可以考虑另一种方案，使用 [pug-to-html](https://github.com/leo-buneev/pug-to-html) 先把 `Pug` 转换成 `Html`， 这样 `eslint-plugin-vue` 就可以使用了。
 
-总而言之，如果不是太需要 lint vue 的话，还是可以使用 pug 的。
+总而言之，**如果不是太需要 lint vue 的话，还是可以使用 pug 的**。
 
 ### 引入 Pug
 
@@ -37,7 +37,13 @@ yarn add -D pug
 +<template lang="pug">
 ```
 
-但是，由于项目使用了 [vite-tsconfig-paths](https://github.com/aleclarson/vite-tsconfig-paths) ，他在支持 pug 上有点问题（详见 [issue](https://github.com/aleclarson/vite-tsconfig-paths/issues/38)）
+<details>
+<summary>
+【已修复的问题】
+
+~~但是，由于项目使用了 [vite-tsconfig-paths](https://github.com/aleclarson/vite-tsconfig-paths) ，他在支持 pug 上有点问题（详见 [issue](https://github.com/aleclarson/vite-tsconfig-paths/issues/38)）...~~
+
+</summary>
 
 所以目前还需要修改 `tsconfig.json`：
 
@@ -45,6 +51,8 @@ yarn add -D pug
 -"include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
 +"include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.js"]
 ```
+
+</details>
 
 ### 配置 Pug Prettier
 
