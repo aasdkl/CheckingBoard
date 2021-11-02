@@ -62,7 +62,7 @@
    });
    ```
 
-3. **使用**
+3. **注册插件并且使用**
 
    首先还是在 `vite.config.ts` 中注册插件：
 
@@ -109,8 +109,50 @@
 
 ## 一些有用的库
 
+### 自动按需引入 - unplugin-vue-components
+
+[unplugin-vue-components](https://github.com/antfu/unplugin-vue-components) 这个插件能帮我们自动生成 import：
+
+1. **安装依赖**
+
+   ```bash
+   npm i -D unplugin-vue-components
+   #or
+   yarn add -D unplugin-vue-components
+   ```
+
+2. **注册插件**
+
+   然后需要在 `vite.config.ts` 中注册插件。
+
+   由于项目中还引入了 `headless UI`，所以还需要加上 `HeadlessUiResolver` 来支持自动按需引入：
+
+   ```ts
+   // vite.config.ts
+   import Components from "unplugin-vue-components/vite";
+   import { HeadlessUiResolver } from "unplugin-vue-components/resolvers";
+
+   export default {
+     plugins: [
+       // ...
+       Components({
+         resolvers: [HeadlessUiResolver()],
+       }),
+     ],
+   };
+   ```
+
+3. **使用**
+
+   现在可以删除 `App.vue` 下组件的 import 了：
+
+   ```diff
+   -import HelloWorld from "components/HelloWorld.vue";
+   ```
+
+### 其他暂未使用
+
 - [VueUse](https://github.com/vueuse/vueuse)
-- [unplugin-vue-components](https://github.com/antfu/unplugin-vue-components)
 - [unplugin-icons](https://github.com/antfu/unplugin-icons)
 
 ---
