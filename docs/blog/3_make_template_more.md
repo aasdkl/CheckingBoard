@@ -3,10 +3,12 @@
 上一部分试着搭建了一个模板，而这一部分主要针对实际的开发项目，包括：
 
 - [UI 框架选择](#UI-框架选择)
-- [一些有用的库](#一些有用的库)
+- [icon 相关](#icon-相关)
+- [自动 import](#自动-import)
 
 另外，还顺便记录了一些暂时没用到的配置：
 
+- [VueUse](#VueUse-尚未使用)
 - [Pug](#Pug-未使用)
 - [Electron](#Electron-模板-挖个坑)
 
@@ -18,21 +20,27 @@
 
 于是根据对 UI 的喜好，找了三个 UI 库，稍微做了一下对比：
 
-| 库                                              | 偏好                                                                                                    | 不足                                                                    |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| [Naive UI](https://www.naiveui.com/zh-CN/light) | 1. 中文文档，且详细<br/> 2. 默认的 UI 比较喜欢<br/> 3. 基于 Vue 3 <br/> 4. 支持按需引入（Tree Shaking） | 1. 无法尝试使用 Tailwind                                                |
-| [daisyUI](https://daisyui.com/)                 | 1. 基于 Tailwind，实际就是一些预设的 @apply                                                             | 1. 比较原生，需要手动处理事件 <br/> 2. 尚不支持按需引入（Tree Shaking） |
-| [headless UI](https://headlessui.dev/)          | 1. 基于 Tailwind，但只有部分需要交互的组件，其余的需要通过 Tailwind 自行实现                            | 1.需要自行实现 btn 之类的基本组件                                       |
+| 库                                              | 偏好                                                                                                    | 不足                                                                                                                           |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| [Naive UI](https://www.naiveui.com/zh-CN/light) | 1. 中文文档，且详细<br/> 2. 默认的 UI 比较喜欢<br/> 3. 基于 Vue 3 <br/> 4. 支持按需引入（Tree Shaking） | 1. 无法尝试使用 Tailwind                                                                                                       |
+| [daisyUI](https://daisyui.com/)                 | 1. 基于 Tailwind，实际就是一些预设的 @apply                                                             | 1. 比较原生，需要手动处理事件 <br/> 2. 尚不支持按需引入（Tree Shaking）[参考](https://github.com/windicss/windicss/issues/517) |
+| [headless UI](https://headlessui.dev/)          | 1. 基于 Tailwind，但只有部分需要交互的组件，其余的需要通过 Tailwind 自行实现                            | 1.需要自行实现 btn 之类的基本组件                                                                                              |
 
 综合来看，Tailwind 作为 原子 CSS，似乎更倾向于我们自行实现基本组件的 UI。
 
 其实也可以通过 [Tailwind 的 prefix](https://tailwindcss.com/docs/configuration#prefix)，来同时使用 **UI 库 + Tailwind**，但终归不是常用的方法，所以作罢。
 
-所以最后决定还是使用 Tailwind 和 headless UI 来开发。
+所以最后决定还是使用 Tailwind 和 [headless UI](https://headlessui.dev/) 来开发。
 
 ### 配置 Windi CSS (Tailwind) + headless UI
 
-> Windi CSS 是 Tailwind CSS 的替代方案，支持按需生成，也更加适应 Vite。
+> 在 Tailwind CSS v2.1 之前，需要通过 Windi CSS 来支持按需生成。
+>
+> 而在之后的版本中，Tailwind CSS 推出了 [`JIT mode`](https://tailwindcss.com/docs/just-in-time-mode)
+>
+> 关于两者之间的关系，可以参考 Windi CSS 这边的[这个回答](https://github.com/windicss/windicss/discussions/176)
+>
+> 回答里面的[那篇 blog](https://tailwindcss.com/docs/just-in-time-mode)，作者在[知乎上也聊了聊](https://www.zhihu.com/pin/1355023913307484160)
 
 配置只需要按照 [Windi CSS](https://windicss.org/integrations/vite.html) 的文档就可以了，`headless UI` 只需要进行安装依赖就能使用。
 
@@ -107,11 +115,118 @@
 }
 ```
 
-## 一些有用的库
+## icon 相关
 
-### 自动按需引入 - unplugin-vue-components
+想要实现按需导入图标，有三个比较方便的库可以选择：
 
-[unplugin-vue-components](https://github.com/antfu/unplugin-vue-components) 这个插件能帮我们自动生成 import：
+- [heroicons](https://github.com/tailwindlabs/heroicons)
+
+  Tailwind 官方提供的 [icon 库](https://heroicons.com/)，以 tag 来区分:：
+
+  ```html
+  <script setup>
+    import { ArrowDownIcon } from "@heroicons/vue/solid";
+  </script>
+
+  <template>
+    <ArrowDownIcon class="h-15 w-15" />
+  </template>
+  ```
+
+- [@windicss/plugin-icons](https://github.com/windicss/plugins/tree/main/packages/icons)
+
+  `Windi CSS` 的 plugin，支持 [css.gg](https://css.gg/app) 下的图标，使用 class 来区分:
+
+  ```html
+  <i class="icon-arrow-down h-15 w-15" />
+  ```
+
+- [unplugin-icons](https://github.com/antfu/unplugin-icons)
+
+  更为**通用**的库，支持 [iconify](https://icon-sets.iconify.design/) 下所有的图标库（包括 heroicons），以 tag 来区分:
+
+  ```html
+  <script setup>
+    import IconArrowDown from "~icons/gg/arrow-down";
+  </script>
+
+  <template>
+    <IconArrowDown class="h-15 w-15" />
+  </template>
+  ```
+
+| 库                                                                                     | 偏好                                     | 不足               |
+| -------------------------------------------------------------------------------------- | ---------------------------------------- | ------------------ |
+| [heroicons](https://github.com/tailwindlabs/heroicons)                                 | 官方提供                                 | 不一定有符合的图标 |
+| [@windicss/plugin-icons](https://github.com/windicss/plugins/tree/main/packages/icons) | 传统的使用方式                           | 不一定有符合的图标 |
+| [unplugin-icons](https://github.com/antfu/unplugin-icons)                              | 图标够多 <br/> 有 VS Code 插件支持可视化 | 版本还不稳定       |
+
+考虑到 icon 的数量，最后选择了通用的 [unplugin-icons](https://github.com/antfu/unplugin-icons)
+
+### 配置 unplugin-icons
+
+1. **安装依赖**
+
+   ```bash
+   npm i -D unplugin-icons
+   #or
+   yarn add -D unplugin-icons
+   ```
+
+2. **注册插件**
+
+   然后需要在 `vite.config.ts` 中注册插件。
+
+   其中 `autoInstall` 这个配置会在 build 的时候，自动将用到的 icon 库加到依赖里面。
+
+   ```ts
+   // vite.config.ts
+   import Icons from "unplugin-icons/vite";
+
+   export default {
+     plugins: [
+       // ...
+       Icons({
+         autoInstall: true,
+       }),
+     ],
+   };
+   ```
+
+3. **使用**
+
+   现在可以使用 icon 了：
+
+   ```html
+   <script setup>
+     // cannot find module error will be shown
+     import IconArrowDown from "~icons/gg/arrow-down";
+   </script>
+
+   <template>
+     <IconArrowDown class="h-15 w-15" />
+   </template>
+   ```
+
+4. **创建声明 `.d.ts`**
+
+   注意到在 `import` 的时候，会报错说找不到模块，所以还需要给加上类型声明：
+
+   ```ts
+   // env.d.ts
+   declare module "~icons/*" {
+     const icon: string;
+     export default icon;
+   }
+   ```
+
+### 配置 IDE 自动提示
+
+VSCode 可以通过扩展 [Iconify IntelliSense](https://marketplace.visualstudio.com/items?itemName=antfu.iconify) 来智能提示。
+
+## 自动 import
+
+为了减轻使用 component 时候的重复输入，可以用 [unplugin-vue-components](https://github.com/antfu/unplugin-vue-components) 这个插件帮我们自动生成 import：
 
 1. **安装依赖**
 
@@ -125,18 +240,19 @@
 
    然后需要在 `vite.config.ts` 中注册插件。
 
-   由于项目中还引入了 `headless UI`，所以还需要加上 `HeadlessUiResolver` 来支持自动按需引入：
+   由于项目中还引入了 [headless UI](https://headlessui.dev/) 和 [unplugin-icons](https://github.com/antfu/unplugin-icons)，所以还需要加上 `HeadlessUiResolver` 和 `IconsResolver` 来支持自动按需引入：
 
    ```ts
    // vite.config.ts
    import Components from "unplugin-vue-components/vite";
    import { HeadlessUiResolver } from "unplugin-vue-components/resolvers";
+   import IconsResolver from "unplugin-icons/resolver";
 
    export default {
      plugins: [
        // ...
        Components({
-         resolvers: [HeadlessUiResolver()],
+         resolvers: [HeadlessUiResolver(), IconsResolver()],
        }),
      ],
    };
@@ -144,18 +260,23 @@
 
 3. **使用**
 
-   现在可以删除 `App.vue` 下组件的 import 了：
+   现在可以删除 `App.vue` 下组件和 icon 的 import 了：
 
    ```diff
    -import HelloWorld from "components/HelloWorld.vue";
+   -import IconArrowDown from "~icons/gg/arrow-down";
+
+   <template>
+   -  <IconArrowDown class="h-15 w-15" />
+   +  <i-gg-arrow-down class="h-15 w-15" />
+   </template>
    ```
 
-### 其他暂未使用
+---
+
+## VueUse (尚未使用)
 
 - [VueUse](https://github.com/vueuse/vueuse)
-- [unplugin-icons](https://github.com/antfu/unplugin-icons)
-
----
 
 ## Pug (未使用)
 

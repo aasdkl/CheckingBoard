@@ -7,6 +7,7 @@ const base = import.meta.env.BASE_URL;
 <template>
   <img alt="Vue logo" src="@/assets/logo.png" />
   <div>{{ base }}</div>
+  <i-gg-arrow-down class="h-15 w-15" />
   <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
 </template>
 
